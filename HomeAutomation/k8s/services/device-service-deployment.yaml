@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: device-service
+  name: device-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: device-service
+  strategy: {}
+  template:
+    metadata:
+
+      labels:
+        app: device-service
+    spec:
+      containers:
+        - env:
+            - name: SPRING_PROFILES_ACTIVE
+              value: docker
+          image: rajeshrnair/deviceservice:latest
+          name: device-service
+          resources: {}
+      restartPolicy: Always
+status: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: device-service
+  name: device-service
+spec:
+  ports:
+    - name: "80"
+      port: 80
+      targetPort: 9194
+  selector:
+    app: device-service
+status:
+  loadBalancer: {}

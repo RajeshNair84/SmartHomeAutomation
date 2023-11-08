@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: command-service
+  name: command-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: command-service
+  strategy: {}
+  template:
+    metadata:
+
+      labels:
+        app: command-service
+    spec:
+      containers:
+        - env:
+            - name: SPRING_DATASOURCE_URL
+              value: jdbc:postgresql://postgres-command:5431/command-service
+            - name: SPRING_PROFILES_ACTIVE
+              value: docker
+          image: rajeshrnair/commandservice:latest
+          name: command-service
+          resources: {}
+      restartPolicy: Always
+status: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: command-service
+  name: command-service
+spec:
+  ports:
+    - name: "80"
+      port: 80
+      targetPort: 9193
+  selector:
+    app: command-service
+status:
+  loadBalancer: {}

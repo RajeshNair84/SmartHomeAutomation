@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: automation-service
+  name: automation-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: automation-service
+  strategy: {}
+  template:
+    metadata:
+
+      labels:
+        app: automation-service
+    spec:
+      containers:
+        - env:
+            - name: SPRING_DATASOURCE_URL
+              value: jdbc:postgresql://postgres-automation:5432/automation-service
+            - name: SPRING_PROFILES_ACTIVE
+              value: docker
+          image: rajeshrnair/automationservice:latest
+          name: automation-service
+          resources: {}
+      restartPolicy: Always
+status: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: automation-service
+  name: automation-service
+spec:
+  ports:
+    - name: "80"
+      port: 80
+      targetPort: 9191
+  selector:
+    app: automation-service
+status:
+  loadBalancer: {}
